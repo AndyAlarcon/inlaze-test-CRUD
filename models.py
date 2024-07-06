@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Float
 from database import Base
 
-class Planet(Base):
+class Planets(Base):
     __tablename__='planets'
 
     id = Column(Integer, primary_key=True, index=True)
