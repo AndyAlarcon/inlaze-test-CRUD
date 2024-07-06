@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import List, Annotated
 import models
 from database import engine, SessionLocal
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 app = FastAPI()
@@ -23,6 +24,13 @@ def get_db():
         db.close()
 
 db_dependency = Annotated[Session, Depends(get_db)]
+
+@app.get("/totalDePlanetas/")
+async def read_planets(db: db_dependency):
+    result = db.query(func.count(models.Planets.id)).scalar()
+    if not result:
+        raise HTTPException(status_code=404, detail='No hay planetas en la BBDD')
+    return { "conteo_planetas": result }
 
 @app.get("/planets/")
 async def read_planets(db: db_dependency):
