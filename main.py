@@ -24,6 +24,13 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
+@app.get("/planets/")
+async def read_planets(db: db_dependency):
+    result = db.query(models.Planets).all()
+    if not result:
+        raise HTTPException(status_code=404, detail='No hay planetas en la BBDD')
+    return result
+
 @app.post("/planets/")
 async def create_planets(planet: PlanetBase, db: db_dependency):
     db_planet = models.Planets(name=planet.name, mass=planet.mass, diameter=planet.diameter, orbital_period=planet.orbital_period, number_of_moons=planet.number_of_moons)
